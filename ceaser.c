@@ -1,29 +1,47 @@
 #include <stdio.h>
 
-	int main(){
-
-		/*opens file*/
+	/*Opens encrypted_text.txt and prints the output. Also checks to make sure the
+	 * file was successfully opened.*/
+	int openEncrypted(){
 		FILE *fp;
 		fp = fopen("encrypted_text.txt", "r");
 
 		char c;
-		
-		/*checks to see if file was successfully opened*/
 
-		if (fp == NULL){
-		       	printf("Error while opening file");
+		if(fp == NULL){
+			printf("Error while opening the file");
 		}
-		
-		/*prints output of text file*/
 
-		do{ 
+		do{
 			c = fgetc(fp);
 			putchar(c);
-		}while(c!=EOF);
-
-		fclose(fp);
-
-		return 0;
-		
+		}while(c != EOF);
 	}
+
+	/*Opens dictionary2.txt and checks to make sure that it was
+	 * successfully opened. */
+
+	int openDictionary(){
+		FILE *fp;
+		fp = fopen("dictionary2.txt", "r");
+
+		char c;
+
+		if(fp == NULL){
+			printf("Error while opening the file");
+		}
+	}
+
+	char* alphabet(){
+		char letters[27] = "abcdefghijklmnopqrstuvwxyz";
+		return letters;
+	}
+	
+
+	int main(){
+		
+		openEncrypted();
+		openDictionary();
+	}
+
 
