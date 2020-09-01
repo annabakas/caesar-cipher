@@ -1,86 +1,31 @@
 #include <stdio.h>
-#include <stdlib.h>
-
-	/*Opens encrypted_text.txt and checks to make sure that
-	 * it was successfully opened.
-	 * Reads file into array */
-	int openEncrypted(){
-		FILE *fp;
-		fp = fopen("encrypted_text.txt", "r");
-
-		char c;
-		
-		//creating array of strings with size 4004
-		char** sentences;
-		sentences = (char**) malloc(sizeof(char*)*4004);
-
-		//checks to make sure file was opened successfully
-		if(fp == NULL){
-			printf("Error while opening the file");
-		}
-
-		//allocating memory for string elements
-		for(int x=0; x<4004; x++){
-			sentences[x]=(char*) malloc(sizeof(char)*4004);
-		}
-
-		//reads line from encrypted_text.txt and stores it in sentences
-		for(int i=0; i<4004; i++){
-			fgets(sentences[i], sizeof(char)*4004, fp);
-			printf("%s\n", sentences[i]);
-		}
-
-		fclose(fp);
-		
-		//deallocating memory
-		free(sentences);
-		
-	}
-
-	/*Opens dictionary2.txt and checks to make sure that it was
-	 * successfully opened.
-	 * Reads file into array */
-
-	int openDictionary(){
-		FILE *fp;
-		fp = fopen("dictionary2.txt", "r");
-		
-
-		char c;
-		
-		//creating array of strings with size 8732
-		char** words;
-		words = (char**) malloc(sizeof(char*)*8732);
-
-		//checks to make sure file was opened successfully
-		if(fp == NULL){
-			printf("Error while opening the file");
-		}
-
-		//allocating memory for elements
-		for(int x=0; x<8732; x++){
-			words[x]=(char*) malloc(sizeof(char)*8732);
-		}
-
-		//reads line from dictionary2.txt and stores it in words
-		for(int i=0; i<8732; i++){
-			fgets(words[i], sizeof(char)*8732, fp);
-			printf("%s\n", words[i]);
-		}
-
-		fclose(fp);
-
-		//deallocating memory
-		free(words);
-		
-	}
-		
+#include <stdlib.h>	
+#include <string.h>
 
 	int main(){
-		
-		//openEncrypted();
-		openDictionary();
 
+		char* string = malloc(4004*sizeof(char));
+
+		int count = 0;
+		char c = 0;
+		
+		//Reads and prints encrypted_text.txt from standard input
+		while((c=getchar()) != EOF){
+			if(c == '\n' || c == 0){
+				printf("%s\n", string);	
+				free(string);
+				string = malloc(4004*sizeof(char));
+				count = 0;
+			}
+			else{
+				string = realloc(string, count+1);
+				string[count] = c;
+				count +=1;
+			}
+		}
 	}
+		
+	
+
 
 
