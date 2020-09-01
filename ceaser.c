@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-	/*Opens encrypted_text.txt and prints the output. Also checks to make sure the
-	 * file was successfully opened.*/
+	/*Opens encrypted_text.txt and checks to make sure that
+	 * it was successfully opened.
+	 * Reads file into array */
 	int openEncrypted(){
 		FILE *fp;
 		fp = fopen("encrypted_text.txt", "r");
@@ -34,15 +35,11 @@
 		//deallocating memory
 		free(sentences);
 		
-		/*
-		do{
-			c = fgetc(fp);
-			putchar(c);
-		}while(c != EOF);*/
 	}
 
 	/*Opens dictionary2.txt and checks to make sure that it was
-	 * successfully opened. */
+	 * successfully opened.
+	 * Reads file into array */
 
 	int openDictionary(){
 		FILE *fp;
