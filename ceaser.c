@@ -2,6 +2,8 @@
 #include <stdlib.h>	
 #include <string.h>
 
+
+
 	int openDictionary(){
 		FILE *fp;
  		fp = fopen("dictionary2.txt", "r");
@@ -36,45 +38,38 @@
  	}
 
 	int main(int argc, char* argv[]){
-		
-		//4004 bytes or writeable data
-		char* string = malloc(4004*sizeof(char));
-		
-		int count = 0;
+		char* string = malloc(sizeof(char));
+
 		char c = 0;
-		
-		
+		int count = 0;
+		int total = 0;
+
 		//Reads and prints encrypted_text.txt from standard input
 		while((c=getchar()) != EOF){
 			if(c == '\n'|| c == 0){
-				//printf("%s\n", string);
 				
 				char* token = strtok(string, " ");
-
- 				//goes through other tokens until NULL
+ 				
+				//goes through other tokens until NULL
  				while(token != NULL){
  					printf("%s\n", token);
  					token = strtok(NULL, " ");
  				}
+
+				free(token);
 				
 				free(string);
-				string = calloc(4004, sizeof(char));
+				string = calloc(1, sizeof(char));
 				count = 0;
-				
+				total+=1;
+				printf("TOTAL: %d\n", total);
+			
 			}
 			else{
 				//realloc grows string dynamically
 				string = realloc(string, count+1);
 				string[count] = c;
 				count +=1;
-
 			}
 		}
-
-		//openDictionary();
 	}
-		
-	
-
-
-
