@@ -49,13 +49,13 @@
 			if(c == '\n'|| c == 0){
 				//printf("%s\n", string);
 				
-				char w[60];
-				int d=0;
-				while(d!=37240){
-					scanf("%s", w);
-					printf("%s\n", w);
-					d++;
-				}
+				char* token = strtok(string, " ");
+
+ 				//goes through other tokens until NULL
+ 				while(token != NULL){
+ 					printf("%s\n", token);
+ 					token = strtok(NULL, " ");
+ 				}
 				
 				free(string);
 				string = calloc(4004, sizeof(char));
