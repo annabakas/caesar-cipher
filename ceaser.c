@@ -38,38 +38,25 @@
  	}
 
 	int main(int argc, char* argv[]){
-		char* string = malloc(sizeof(char));
 
-		char c = 0;
-		int count = 0;
-		int total = 0;
-
-		//Reads and prints encrypted_text.txt from standard input
-		while((c=getchar()) != EOF){
-			if(c == '\n'|| c == 0){
-				
-				char* token = strtok(string, " ");
- 				
-				//goes through other tokens until NULL
- 				while(token != NULL){
- 					printf("%s\n", token);
- 					token = strtok(NULL, " ");
- 				}
-
-				free(token);
-				
-				free(string);
-				string = calloc(1, sizeof(char));
-				count = 0;
-				total+=1;
-				printf("TOTAL: %d\n", total);
-			
+		char *line = NULL;
+		size_t len = 0;
+		size_t read;
+		//int total = 0;
+		
+		//Read encrypted_text using getline() while read != EOF
+		//Splits sentences at spaces into words using strtok()
+		while((read = getline(&line, &len, stdin)) != EOF){
+			//printf("%s\n", line);
+		
+			char* token = strtok(line, " ");
+			while(token != NULL){
+				printf("%s\n", token);
+				token = strtok(NULL, " ");
 			}
-			else{
-				//realloc grows string dynamically
-				string = realloc(string, count+1);
-				string[count] = c;
-				count +=1;
-			}
+			//total +=1;
+			//printf("TOTAL: %d\n", total);
 		}
+
+		free(line);
 	}
