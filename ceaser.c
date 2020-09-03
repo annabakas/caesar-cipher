@@ -2,8 +2,6 @@
 #include <stdlib.h>	
 #include <string.h>
 
-
-
 	int openDictionary(){
 		FILE *fp;
  		fp = fopen("dictionary2.txt", "r");
@@ -37,26 +35,57 @@
 
  	}
 
-	int main(int argc, char* argv[]){
+	int decrypt(char **words, int size){
+		for(int i=0; i < size; i++){
+			printf("%d: %s\n",i, words[i]);
+		}
+	}
+
+
+	int split(){
+		int counter = 0;
+		char **words= 0;
+		int tempCounter = 0;
 
 		char *line = NULL;
 		size_t len = 0;
-		size_t read;
-		//int total = 0;
+		size_t read = 0;
 		
-		//Read encrypted_text using getline() while read != EOF
-		//Splits sentences at spaces into words using strtok()
-		while((read = getline(&line, &len, stdin)) != EOF){
-			//printf("%s\n", line);
-		
-			char* token = strtok(line, " ");
-			while(token != NULL){
-				printf("%s\n", token);
+		//Read encrypted_text using getline()
+		//Splits sentences into words at spaces using strtok()		
+		while((read = getline(&line, &len, stdin)) != EOF)
+		{
+			char *token = strtok(line, " ");
+			while(token != NULL)
+			{
+				//NULL passed as first argument in order to
+				//continue with the same string (line)
+				if(tempCounter == 0){
+					token = strtok(NULL, " ");
+					tempCounter++;
+				}
+				//grows **words with realloc
+				//allocates size of each element of words using malloc
+				//copies token to words[counter] as counter is incremented
+				else{
+					words = realloc(words, (counter+ 1) * sizeof(char *));
+					words[counter] = malloc(strlen(token) + 1);
+					strcpy(words[counter++], token);
+				}
 				token = strtok(NULL, " ");
 			}
-			//total +=1;
-			//printf("TOTAL: %d\n", total);
 		}
-
-		free(line);
+		//prints words
+		for(int i=0; i<counter; i++){
+			//printf("%d: %s\n", i, words[i]);
+		}
+		
+		decrypt(words, counter);
 	}
+
+
+	int main(int argc, char* argv[]){
+		split();
+	}
+
+
