@@ -35,12 +35,31 @@
 
  	}
 
-	int decrypt(char **words, int size){
-		for(int i=0; i < size; i++){
-			printf("%d: %s\n",i, words[i]);
-		}
-	}
+	int decrypt(char *word){
+		//printf("%s\n", word);
+		
+		int i = 0;
+		char ch;
+		char decrypted[100];
+		for(int key = 0; key < 26; key++){
+			for(int i=0; word[i] != '\0'; ++i){
+				ch = word[i];
+				
+				if(ch >= 'A' && ch <= 'Z'){
+					ch = ch - key;
 
+					if (ch < 'A'){
+						ch = ch + 'Z' - 'A' + 1;
+					}
+
+					decrypted[i] = ch;
+				}
+			}
+
+			printf("Key:%d %s\n", key, decrypted);
+		}
+
+	}
 
 	int split(){
 		int counter = 0;
@@ -54,7 +73,7 @@
 		//Read encrypted_text using getline()
 		//Splits sentences into words at spaces using strtok()		
 		while((read = getline(&line, &len, stdin)) != EOF)
-		{
+		{	
 			char *token = strtok(line, " ");
 			while(token != NULL)
 			{
@@ -70,17 +89,17 @@
 				else{
 					words = realloc(words, (counter+ 1) * sizeof(char *));
 					words[counter] = malloc(strlen(token) + 1);
-					strcpy(words[counter++], token);
+					decrypt(strcpy(words[counter++], token));
 				}
 				token = strtok(NULL, " ");
 			}
 		}
+
+
 		//prints words
 		for(int i=0; i<counter; i++){
 			//printf("%d: %s\n", i, words[i]);
 		}
-		
-		decrypt(words, counter);
 	}
 
 
