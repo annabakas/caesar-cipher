@@ -34,7 +34,11 @@
  		free(words);
 
  	}
-
+	
+	//Takes in *word from split() with individual words
+	//Brute force testing all shifts
+	//Checks individual characters  in range A-Z  with every shift (1-26)
+	//Second if statement checks if character is past Z and loops it around so that the character is back within the range of A-Z
 	int decrypt(char *word){
 		//printf("%s\n", word);
 		
@@ -47,11 +51,11 @@
 				
 				if(ch >= 'A' && ch <= 'Z'){
 					ch = ch - key;
-
+					
 					if (ch < 'A'){
 						ch = ch + 'Z' - 'A' + 1;
 					}
-
+				
 					decrypted[i] = ch;
 				}
 			}
@@ -97,9 +101,10 @@
 
 
 		//prints words
+		/*
 		for(int i=0; i<counter; i++){
 			//printf("%d: %s\n", i, words[i]);
-		}
+		}*/
 	}
 
 
