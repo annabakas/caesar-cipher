@@ -2,43 +2,30 @@
 #include <stdlib.h>	
 #include <string.h>
 
+	
+	
+	//Opens dictionary2.txt using getline()
 	int openDictionary(){
 		FILE *fp;
  		fp = fopen("dictionary2.txt", "r");
 
-		char c;
+		char *line = NULL;
+		size_t len = 0;
+		size_t read = 0;
+		
+		while((read = getline(&line, &len, fp)) != -1){
+			printf("%s\n", line);
+		}
 
- 		//creating array of strings with size 8732
- 		char** words;
- 		words = (char**) malloc(sizeof(char*)*8732);
+		fclose(fp);
 
- 		//checks to make sure file was opened successfully
- 		if(fp == NULL){
- 			printf("Error while opening the file");
- 		}
 
-		//allocating memory for elements
- 		for(int x=0; x<8732; x++){
- 			words[x]=(char*) malloc(sizeof(char)*8732);
- 		}
+	}
 
- 		//reads line from dictionary2.txt and stores it in words
- 		for(int i=0; i<8732; i++){
- 			fgets(words[i], sizeof(char)*8732, fp);
- 			printf("%s\n", words[i]);
- 		}
-
- 		fclose(fp);
-
- 		//deallocating memory
- 		free(words);
-
- 	}
-	
 	//Takes in *word from split() with individual words
-	//Brute force testing all shifts
 	//Checks individual characters  in range A-Z  with every shift (1-26)
-	//Second if statement checks if character is past Z and loops it around so that the character is back within the range of A-Z
+	//Second if statement checks if character is past Z and
+	//loops it back around so that the character is back within the range of A-Z
 	int decrypt(char *word){
 		//printf("%s\n", word);
 		
@@ -62,9 +49,10 @@
 
 			printf("Key:%d %s\n", key, decrypted);
 		}
-
 	}
 
+	//Reads encrypted_text using getline() and splits 
+	//sentences into words at spaces using strtok().
 	int split(){
 		int counter = 0;
 		char **words= 0;
@@ -73,9 +61,7 @@
 		char *line = NULL;
 		size_t len = 0;
 		size_t read = 0;
-		
-		//Read encrypted_text using getline()
-		//Splits sentences into words at spaces using strtok()		
+				
 		while((read = getline(&line, &len, stdin)) != EOF)
 		{	
 			char *token = strtok(line, " ");
@@ -110,6 +96,7 @@
 
 	int main(int argc, char* argv[]){
 		split();
+		//openDictionary();
 	}
 
 
