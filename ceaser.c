@@ -1,24 +1,41 @@
 #include <stdio.h>
-#include <stdlib.h>	
+#include <stdlib.h>
 #include <string.h>
 
-	
-	
-	//Opens dictionary2.txt using getline()
-	int openDictionary(){
-		FILE *fp;
- 		fp = fopen("dictionary2.txt", "r");
+#define LINES 8732
 
-		char *line = NULL;
-		size_t len = 0;
-		size_t read = 0;
+char dictWords[LINES][100];
+
+	//Opens dictionary2.txt using getline()
+	char* openDictionary(){
+		FILE *fp;
+		fp = fopen("dictionary2.txt", "r");
 		
-		while((read = getline(&line, &len, fp)) != -1){
-			printf("%s\n", line);
+		int i = 0;
+		while(1){
+			char r = (char)fgetc(fp);
+			int k = 0;
+			while(!feof(fp)){
+				dictWords[i][k++] = r;
+				r = (char)fgetc(fp);
+			}
+			dictWords[i][k] = 0;
+
+			if(feof(fp)){
+				break;
+			}
+
+			i++;
+		}
+
+		int j;
+
+		for(j = 0; j <= i; j++){
+			//printf("%s\n", dictWords[j]);
+			return dictWords[j];
 		}
 
 		fclose(fp);
-
 
 	}
 
@@ -26,32 +43,40 @@
 	//Checks individual characters  in range A-Z  with every shift (1-26)
 	//Second if statement checks if character is past Z and
 	//loops it back around so that the character is back within the range of A-Z
-	int decrypt(char *word){
+	char* decrypt(char *word){
 		//printf("%s\n", word);
-		
-		int i = 0;
+
 		char ch;
 		char decrypted[100];
-		for(int key = 0; key < 26; key++){
+
+		//int g = openDictionary();
+		for(int key = 1; key < 27; key++){
 			for(int i=0; word[i] != '\0'; ++i){
+				int k = 0;
 				ch = word[i];
-				
+
 				if(ch >= 'A' && ch <= 'Z'){
 					ch = ch - key;
-					
+
 					if (ch < 'A'){
 						ch = ch + 'Z' - 'A' + 1;
 					}
-				
-					decrypted[i] = ch;
+
+					decrypted[i]= ch;
 				}
 			}
-
-			printf("Key:%d %s\n", key, decrypted);
+			//printf("Shift:%d %s\n", key, decrypted);
 		}
+
+		//printf("%s\n", decrypted);
 	}
 
-	//Reads encrypted_text using getline() and splits 
+	int compare(){
+		printf("%s\n", openDictionary());
+		//printf("%s\n", decrypted);
+	}
+
+	//Reads encrypted_text using getline() and splits
 	//sentences into words at spaces using strtok().
 	int split(){
 		int counter = 0;
@@ -61,9 +86,9 @@
 		char *line = NULL;
 		size_t len = 0;
 		size_t read = 0;
-				
+
 		while((read = getline(&line, &len, stdin)) != EOF)
-		{	
+		{
 			char *token = strtok(line, " ");
 			while(token != NULL)
 			{
@@ -96,7 +121,8 @@
 
 	int main(int argc, char* argv[]){
 		split();
-		//openDictionary();
+		compare();
+		//printf("%s\n", openDictionary());
 	}
 
 
