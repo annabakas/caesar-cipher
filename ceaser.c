@@ -6,7 +6,7 @@
 
 char dictWords[LINES][100];
 
-	//Opens dictionary2.txt using getline()
+	//Reads dictionary2.txt and stores in 2D array
 	char* openDictionary(){
 		FILE *fp;
 		fp = fopen("dictionary2.txt", "r");
@@ -15,12 +15,16 @@ char dictWords[LINES][100];
 		while(1){
 			char r = (char)fgetc(fp);
 			int k = 0;
+			//Read until EOF
 			while(!feof(fp)){
 				dictWords[i][k++] = r;
 				r = (char)fgetc(fp);
 			}
+			
+			//Make last character of string null
 			dictWords[i][k] = 0;
-
+			
+			//Check for EOF
 			if(feof(fp)){
 				break;
 			}
