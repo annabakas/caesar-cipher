@@ -3,11 +3,12 @@
 #include <string.h>
 
 #define LINES 8732
+#define WORDLENGTH 100
 
-char dictWords[LINES][100];
+char dictWords[LINES][WORDLENGTH];
 
 	//Reads dictionary2.txt and stores in 2D array
-	char* openDictionary(){
+	/*char* openDictionary(){
 		FILE *fp;
 		fp = fopen("dictionary2.txt", "r");
 		
@@ -35,19 +36,15 @@ char dictWords[LINES][100];
 		int j;
 
 		for(j = 0; j <= i; j++){
-			//printf("%s\n", dictWords[j]);
+			printf("%s\n", dictWords[j]);
 			return dictWords[j];
 		}
 
 		fclose(fp);
 
-	}
-
-	//Takes in *word from split() with individual words
-	//Checks individual characters  in range A-Z  with every shift (1-26)
-	//Second if statement checks if character is past Z and
-	//loops it back around so that the character is back within the range of A-Z
-	char* decrypt(char *word){
+	}*/
+	
+	int decrypt(char *word){
 		//printf("%s\n", word);
 
 		char ch;
@@ -69,64 +66,58 @@ char dictWords[LINES][100];
 					decrypted[i]= ch;
 				}
 			}
-			//printf("Shift:%d %s\n", key, decrypted);
+			printf("Shift:%d %s\n", key, decrypted);
 		}
-
-		//printf("%s\n", decrypted);
 	}
 
-	int compare(){
-		printf("%s\n", openDictionary());
-		//printf("%s\n", decrypted);
-	}
+	//Takes in sentence from encrypted_text
+	//Splits sentence into words using strtok()
+	int compare(char *line){
 
-	//Reads encrypted_text using getline() and splits
-	//sentences into words at spaces using strtok().
-	int split(){
 		int counter = 0;
 		char **words= 0;
 		int tempCounter = 0;
 
+		char *token = strtok(line, " ");
+
+		char ch;
+		char decrypted[100];
+
+		while(token != NULL)
+		{
+			//NULL passed as first argument in order to
+			//continue with the same string (line)
+			if(tempCounter == 0){
+				token = strtok(NULL, " ");
+				tempCounter++;
+			}
+			//grows **words with realloc
+			//allocates size of each element of words using malloc
+			//copies token to words[counter] as counter is incremented
+			else{
+				words = realloc(words, (counter+ 1) * sizeof(char *));
+				words[counter] = malloc(strlen(token) + 1);
+				decrypt(strcpy(words[counter++], token));
+			}
+
+			token = strtok(NULL, " ");
+			//How do I rest **words / change the pointers?
+		}
+
+	}
+
+
+	//Reads encrypted_text using getline()
+	int main(){
+		
 		char *line = NULL;
 		size_t len = 0;
 		size_t read = 0;
 
 		while((read = getline(&line, &len, stdin)) != EOF)
 		{
-			char *token = strtok(line, " ");
-			while(token != NULL)
-			{
-				//NULL passed as first argument in order to
-				//continue with the same string (line)
-				if(tempCounter == 0){
-					token = strtok(NULL, " ");
-					tempCounter++;
-				}
-				//grows **words with realloc
-				//allocates size of each element of words using malloc
-				//copies token to words[counter] as counter is incremented
-				else{
-					words = realloc(words, (counter+ 1) * sizeof(char *));
-					words[counter] = malloc(strlen(token) + 1);
-					decrypt(strcpy(words[counter++], token));
-				}
-				token = strtok(NULL, " ");
-			}
+			compare(line);	
 		}
 
-
-		//prints words
-		/*
-		for(int i=0; i<counter; i++){
-			//printf("%d: %s\n", i, words[i]);
-		}*/
+		
 	}
-
-
-	int main(int argc, char* argv[]){
-		split();
-		compare();
-		//printf("%s\n", openDictionary());
-	}
-
-
