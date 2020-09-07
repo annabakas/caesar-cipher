@@ -3,12 +3,12 @@
 #include <string.h>
 
 #define LINES 8732
-#define WORDLENGTH 100
+#define WORDLENGTH 16
 
 char dictWords[LINES][WORDLENGTH];
 
 	//Reads dictionary2.txt and stores in 2D array
-	/*char* openDictionary(){
+	int inDict(char *decrypted){
 		FILE *fp;
 		fp = fopen("dictionary2.txt", "r");
 		
@@ -23,7 +23,7 @@ char dictWords[LINES][WORDLENGTH];
 			}
 			
 			//Make last character of string null
-			dictWords[i][k] = 0;
+			//dictWords[i][k] = 0;
 			
 			//Check for EOF
 			if(feof(fp)){
@@ -32,26 +32,27 @@ char dictWords[LINES][WORDLENGTH];
 
 			i++;
 		}
-
+		
 		int j;
-
-		for(j = 0; j <= i; j++){
-			printf("%s\n", dictWords[j]);
-			return dictWords[j];
+		/*for(j = 0; j <= i; j++){
+			printf("%s",dictWords[j]);
+		}*/
+		for(int h=0; h < LINES; h++){
+			puts(dictWords[h]);
 		}
 
 		fclose(fp);
 
-	}*/
+		return 0;
+	}
 	
 	int decrypt(char *word){
-		//printf("%s\n", word);
+		//printf("\n%s\n", word);
 
 		char ch;
-		char decrypted[100];
+		char decrypted[200];
 
-		//int g = openDictionary();
-		for(int key = 1; key < 27; key++){
+		for(int key = 1; key < 26; key++){
 			for(int i=0; word[i] != '\0'; ++i){
 				int k = 0;
 				ch = word[i];
@@ -63,25 +64,22 @@ char dictWords[LINES][WORDLENGTH];
 						ch = ch + 'Z' - 'A' + 1;
 					}
 
-					decrypted[i]= ch;
+					 decrypted[i]= ch;
 				}
 			}
-			printf("Shift:%d %s\n", key, decrypted);
+			inDict(decrypted);
+			//printf("%d: %s\n", key, decrypted);
 		}
 	}
 
 	//Takes in sentence from encrypted_text
 	//Splits sentence into words using strtok()
 	int compare(char *line){
-
 		int counter = 0;
 		char **words= 0;
 		int tempCounter = 0;
 
 		char *token = strtok(line, " ");
-
-		char ch;
-		char decrypted[100];
 
 		while(token != NULL)
 		{
@@ -98,13 +96,14 @@ char dictWords[LINES][WORDLENGTH];
 				words = realloc(words, (counter+ 1) * sizeof(char *));
 				words[counter] = malloc(strlen(token) + 1);
 				decrypt(strcpy(words[counter++], token));
+
+				token = strtok(NULL, " ");
 			}
-
-			token = strtok(NULL, " ");
-			//How do I rest **words / change the pointers?
+			//token = strtok(NULL, " ");
+			counter=0;
+			//How do I reset **words / change the pointers?
 		}
-
-	}
+	}	
 
 
 	//Reads encrypted_text using getline()
@@ -113,11 +112,11 @@ char dictWords[LINES][WORDLENGTH];
 		char *line = NULL;
 		size_t len = 0;
 		size_t read = 0;
-
+		
+		//inDict();
+		
 		while((read = getline(&line, &len, stdin)) != EOF)
 		{
 			compare(line);	
-		}
-
-		
+		}	
 	}
