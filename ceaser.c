@@ -79,74 +79,34 @@ const int MAX_LINE_LENGTH_INC = 2;
 		int notfound = 0;
 		int found = 0;
 		//printf("%d lines\n", nlines);
-		for(i=0; i<nlines;i++){
+		for(int i=0; i<nlines;i++){
 			//printf("%s\n", inputFile[i]);
 			result = strcmp(inputFile[i], decrypted);
 			if(result == 0){
 				//printf("Found\n");
 				found++;
-				return 1;
+				//return 1;
 			}
 			else{
 				//printf("not found\n");
 				notfound++;
-				return 0;
+				//return 0;
 			}
 		}
-		//printf("not found: %d\n", notfound);
-		//printf("found: %d\n", found);
-		
-		/*
-		int i = 0;
-		
-		while(1){
-			char r = (char)fgetc(fp);
-			int k = 0;
-			//Read until EOF
-			while(!feof(fp)){
-				dictWords[i][k++] = r;
-				r = (char)fgetc(fp);
-			}
-			
-			//Make last character of string null
-			dictWords[i][k] = 0;
-			
-			//Check for EOF
-			if(feof(fp)){
-				break;
-			}
-
-			i++;
+		printf("Not found %d\n", notfound);
+		printf("found %d\n", found);
+		for(int w=0; w<nlines;w++){
+			free(inputFile[w]);
 		}
-
-		*/
-		/*
-		int j;
-		for(j = 0; j <= i; j++){
-			printf("%s",dictWords[j]);
-		}*/
-		//int charLen = sizeof(decrypted);
-		//int g;
-		/*
-		for(g=0;g<=charLen; g++){
-			printf("%c\n", decrypted[g]);
-			if(dictWords[0][5] == decrypted[g]){
-				printf("-Same\n");
-			}
-			else{
-				printf("-not the same\n");
-			}
-		}*/
-		
 		fclose(fp);
-
-		return 0;
 	}
 	
 	char* decrypt(char *word){
 		//printf("\n%s\n", word);
 		char ch;
-		char decrypted[200];
+		//char decrypted[150];
+		char *decrypted;
+		decrypted = (char*) calloc(1,sizeof(char));
 		int d=0;
 		char A[26][2];
 		int value = 0;
@@ -168,17 +128,17 @@ const int MAX_LINE_LENGTH_INC = 2;
 				
 			}	
 			printf("Shift Key: %d %s\n",key, decrypted);
-			int r = openDict(decrypted);
-			for(int j=0; j<26; j++){
+			openDict(decrypted);
+			/*for(int j=0; j<26; j++){
 				A[key][j] = value;
 				if(r == 1){
 					value+=1;
 					A[key][j] = value;
 				}
-			}
+			}*/
 			//break;
 		}
-
+		/*
 		int MAX = 0;
 
 		for(int p = 1; p<26; p++){
@@ -188,34 +148,13 @@ const int MAX_LINE_LENGTH_INC = 2;
 				}
 			}
 		}
-		printf("%d\n", MAX);
-		free(word);
+		printf("%d\n", MAX);*/
+		free(decrypted);
 	}
 
 	//Takes in sentence from encrypted_text
 	//Splits sentence into words using strtok()
 	int split(char *l){
-		/*int i=0;
-		char *cp;
-		char *bp;
-		
-		char *array[5000];
-		int x;
-
-		bp = l;
-		while(1){
-			cp = strtok(bp, " ");
-			bp = NULL;
-
-			if(cp == NULL){
-				break;
-			}
-			array[i++] = cp;
-
-			//printf("%s\n", cp);
-		}*/
-
-		
 		int counter = 0;
 		char **words= 0;
 		int tempCounter = 0;
@@ -255,14 +194,11 @@ const int MAX_LINE_LENGTH_INC = 2;
 		size_t read = 0;
 		
 		
-		//inDict();
-		
-		while((read = getline(&line, &len, stdin)) != EOF)
+		while((read = getline(&line, &len, stdin)) <= 50)
 		{
 			split(line);
-			//free(line);
 			//trying first sentence
-			break;
-			printf("\nNew Sentence\n");
+			//break;
+			//printf("\nNew Sentence\n");
 		}
 	}
