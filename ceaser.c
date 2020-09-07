@@ -13,7 +13,7 @@ const int MAX_LINE_LENGTH_INC = 2;
 
 	//Reads dictionary2.txt and stores in array
 	//Check if decrypted word is in array of dictionary words
-	int openDict(char *decrypted){
+	int openDict(char *decrypted, int key){
 		FILE *fp;
 		fp = fopen("dictionary2.txt", "r");
 		
@@ -74,31 +74,47 @@ const int MAX_LINE_LENGTH_INC = 2;
 				}
 			}
 		}
+		
 		int result;
-		//printf("%s\n", decrypted);
+		printf("Key: %d %s\n",key, decrypted);
 		int notfound = 0;
 		int found = 0;
 		//printf("%d lines\n", nlines);
+		FILE *ptr;
+		ptr = fopen("shifts.txt", "a");
 		for(int i=0; i<nlines;i++){
 			//printf("%s\n", inputFile[i]);
 			result = strcmp(inputFile[i], decrypted);
+
 			if(result == 0){
 				//printf("Found\n");
-				found++;
+				found++;	
 				//return 1;
+				
+				
 			}
 			else{
 				//printf("not found\n");
 				notfound++;
 				//return 0;
 			}
+			
 		}
-		printf("Not found %d\n", notfound);
-		printf("found %d\n", found);
+		//printf("Not found %d\n", notfound);
+		//printf("found %d\n", found);
+		if(found == 4){
+			fprintf(ptr, "%d\n", key);
+		}
 		for(int w=0; w<nlines;w++){
 			free(inputFile[w]);
 		}
+		fclose(ptr);
 		fclose(fp);
+		/*FILE *ptr;
+		ptr = fopen("shifts.txt", "w+");
+		fprintf(ptr, "%d", key);
+		fclose(ptr);*/
+		return 0;
 	}
 	
 	char* decrypt(char *word){
@@ -107,13 +123,11 @@ const int MAX_LINE_LENGTH_INC = 2;
 		//char decrypted[150];
 		char *decrypted;
 		decrypted = (char*) calloc(1,sizeof(char));
-		int d=0;
-		char A[26][2];
-		int value = 0;
+		
 		for(int key = 1; key < 26; key++){
 			for(int i=0; word[i] != '\0'; ++i){
 				int k = 0;
-				d++;
+				
 				ch = word[i];
 
 				if(ch >= 'A' && ch <= 'Z'){
@@ -127,28 +141,10 @@ const int MAX_LINE_LENGTH_INC = 2;
 				}
 				
 			}	
-			printf("Shift Key: %d %s\n",key, decrypted);
-			openDict(decrypted);
-			/*for(int j=0; j<26; j++){
-				A[key][j] = value;
-				if(r == 1){
-					value+=1;
-					A[key][j] = value;
-				}
-			}*/
-			//break;
+			//printf("Shift Key: %d %s\n",key, decrypted);
+			openDict(decrypted, key);
 		}
-		/*
-		int MAX = 0;
-
-		for(int p = 1; p<26; p++){
-			for(int q=0; q < 2; q++){
-				if(A[p][q] > MAX){
-					MAX = A[p][q];
-				}
-			}
-		}
-		printf("%d\n", MAX);*/
+		
 		free(decrypted);
 	}
 
@@ -194,7 +190,7 @@ const int MAX_LINE_LENGTH_INC = 2;
 		size_t read = 0;
 		
 		
-		while((read = getline(&line, &len, stdin)) <= 50)
+		while((read = getline(&line, &len, stdin)) <= 101)
 		{
 			split(line);
 			//trying first sentence
