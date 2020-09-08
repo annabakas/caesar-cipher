@@ -2,23 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ROW 8732
-#define COL 16
+#define SHIFTS 25
 
-//char dictWords[ROW][COL];
 const int INITIAL_MAX_LINES = 2;
 const int MAX_LINES_INC = 2;
 const int INITIAL_MAX_LINE_LENGTH = 2;
 const int MAX_LINE_LENGTH_INC = 2;
 
-char shifts[25][2];
+char shifts[SHIFTS];
+int max_index;
+
+
 	//Reads dictionary2.txt and stores in array
 	//Check if decrypted word is in array of dictionary words
+	//If word is in dictionary, count occurrences of each shift and find max
 	int openDict(char *decrypted, int key){
 		FILE *fp;
 		fp = fopen("dictionary2.txt", "r");
 		
-		int nlines = 0, i;
+		int nlines = 0, i, max, value, result, found;
 		char **inputFile, *buffer;
 		int maxLines, c, buflen, bufp, endline;
 
@@ -76,13 +78,12 @@ char shifts[25][2];
 			}
 		}
 		
-		int result;
-		printf("Key: %d %s\n",key, decrypted);
-		int notfound = 0;
-		int found = 0;
+		//printf("Key: %d %s\n",key, decrypted);
+		
 		//printf("%d lines\n", nlines);
-		FILE *ptr;
-		ptr = fopen("shifts.txt", "a");
+		
+		//Go through dictionary and compare dictionary word to decrypted word
+		//Increment found if result == 0
 		for(int i=0; i<nlines;i++){
 			//printf("%s\n", inputFile[i]);
 			result = strcmp(inputFile[i], decrypted);
@@ -90,39 +91,49 @@ char shifts[25][2];
 			if(result == 0){
 				//printf("Found\n");
 				found++;	
-				//return 1;
-				
-				
+				//return 1;		
 			}
 			else{
 				//printf("not found\n");
-				notfound++;
-				//return 0;
 			}
 			
 		}
-		//printf("Not found %d\n", notfound);
-		printf("found %d\n", found);
 		
+		//printf("Dictionary: %d\n", found);
+		
+		max = shifts[0];
+		
+		//If word is in the dictionary, find shift with max occurences
 		if(found == 4){
-			fprintf(ptr, "%d\n", key);
+			shifts[key] += 1;
+			//printf("Occurences: %d\n", shifts[key]);
+			//Ignore max shift occurences == 1
+			if(shifts[key] == 1){
+				
+			}
+			else{
+				if(shifts[key] > max){
+					max_index = key;
+				}
+			}
 		}
+
+		//Free dictionary words
 		for(int w=0; w<nlines;w++){
 			free(inputFile[w]);
 		}
-		fclose(ptr);
+		
 		fclose(fp);
-		/*FILE *ptr;
-		ptr = fopen("shifts.txt", "w+");
-		fprintf(ptr, "%d", key);
-		fclose(ptr);*/
 		return 0;
 	}
-	
+
+	//Decrypts word(s) from sentences
+	//Passes decrypted word and key/shift to openDict() to check 
+	//if it's in the dictionary
 	char* decrypt(char *word){
 		//printf("\n%s\n", word);
 		char ch;
-		//char decrypted[150];
+		
 		char *decrypted;
 		decrypted = (char*) calloc(1,sizeof(char));
 		
@@ -152,6 +163,7 @@ char shifts[25][2];
 
 	//Takes in sentence from encrypted_text
 	//Splits sentence into words using strtok()
+	//Pass word to decrypt()
 	int split(char *l){
 		int counter = 0;
 		char **words= 0;
@@ -174,12 +186,10 @@ char shifts[25][2];
 				words = realloc(words, (counter+ 1) * sizeof(char *));
 				words[counter] = malloc(strlen(token) + 1);
 				decrypt(strcpy(words[counter++], token));
-				//wordPossible(strcpy(words[counter++], token));
 				token = strtok(NULL, " ");
 			}
 			
 			counter = 0;
-			//How do I reset **words / change the pointers?
 		}
 	}	
 
@@ -191,21 +201,23 @@ char shifts[25][2];
 		size_t len = 0;
 		size_t read = 0;
 		
-		for(int i = 0; i<26;++i){
-			for(int j=0; j<2; j++){
-				shifts[i++][j] = 0;
-				printf("Shift: %d %d\n",i,shifts[i][j]);
-			}
-			printf("\n");
-		}
-		/*for(int i = 0; i < 26; ++i){	
-			printf("Shift %d Count %d\n", i+1, shifts[i][0]);
-		}*/
+		FILE *fp;
+		fp = fopen("shifts.txt", "w");
+
 		while((read = getline(&line, &len, stdin)) <= 101)
 		{
 			split(line);
-			//trying first sentence
-			break;
-			//printf("\nNew Sentence\n");
+			
+			//Writes best shift to shifts.txt
+			fprintf(fp, "%d\n", max_index);
+			
+			//printf("\nBest Shift: %d\n", max_index);
+			
+			//Resets occurences of each shift for each sentence
+			for(int i = 1; i<26; i++){
+				shifts[i] = 0;
+			}
 		}
+
+		fclose(fp);
 	}
