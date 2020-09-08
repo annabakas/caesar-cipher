@@ -219,7 +219,7 @@ int max_index;
 		FILE *fp;
 		fp = fopen("shifts.txt", "w");
 
-		while((read = getline(&line, &len, stdin)) <= 101)
+		while((read = getline(&line, &len, stdin)) != EOF)
 		{
 			split(line);
 			
