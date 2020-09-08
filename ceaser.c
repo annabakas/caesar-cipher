@@ -20,19 +20,22 @@ int max_index;
 		FILE *fp;
 		fp = fopen("dictionary2.txt", "r");
 		
-		int nlines = 0, i, max, value, result, found;
-		char **inputFile, *buffer;
+		int lines = 0, i, max, value, result, found;
+		char **file, *buffer;
 		int maxLines, c, buflen, bufp, endline;
 
 		maxLines = INITIAL_MAX_LINES;
+		
+		//Allocating memory for inputFile
+		file = (char **)malloc(maxLines*sizeof(char*));
 
-		inputFile = (char **)malloc(maxLines*sizeof(char*));
-
-		//Checks to make sure file was opened
+		//Checks to make sure file was opened successfully
 		if(fp == 0){
 			printf("Cannot open file\n");
 		}
 		else{
+			//Initialize buffer len and position.
+			//Allocates memory for buffer
 			bufp = 0;
 			buflen = INITIAL_MAX_LINE_LENGTH;
 			buffer = (char *) malloc(buflen * sizeof(char*));
@@ -40,37 +43,49 @@ int max_index;
 			c = 0;
 
 			while(c != EOF){
+				
 				endline = 0;
+
+				//Grabbing characters
 				c = fgetc(fp);
 
+				//Discard character
 				if(c==EOF || c=='\n' || c=='\r'){
+					//Setting end of line to true/1
 					endline = 1;
-					//Discard this character
+				
 				}
-				//Check if there is enough memory then put character in buffer
-				//Leave room for null character
+				//Putting character in buffer
+				//Check if there is enough memory
+				//buflen-1 leaving room for null character
+				//Incrementing buffer position
 				else{
 					if(bufp >= buflen - 1){
 						buflen+=MAX_LINE_LENGTH_INC;
 						buffer = (char *) realloc(buffer, buflen * sizeof(char));
 					}
-
+					
 					buffer[bufp] = c;
 					bufp++;
 				}
 				
+				//If end of line was reached, get a new buffer
+				//Check if more memory is needed
+				//Realloc memory to inputFile
 				if(endline){
-					//Get a new buffer and check if we need more memory
-					if(nlines >= maxLines){
+					if(lines >= maxLines){
 						maxLines += MAX_LINES_INC;
-						inputFile = (char**) realloc(inputFile, maxLines * sizeof(char*));
+						file = (char**) realloc(file, maxLines * sizeof(char*));
 					}
 					//Null terminate buffer
 					buffer[bufp++] = 0;
 					
-					inputFile[nlines] = buffer;
-					nlines++;
+					//Add buffer to inputFile
+					//Increment line
+					file[lines] = buffer;
+					lines++;
 
+					//Resets buffer
 					bufp = 0;
 					buflen = INITIAL_MAX_LINE_LENGTH;
 					buffer = (char*) malloc(buflen * sizeof(char*));
@@ -84,9 +99,9 @@ int max_index;
 		
 		//Go through dictionary and compare dictionary word to decrypted word
 		//Increment found if result == 0
-		for(int i=0; i<nlines;i++){
+		for(int i=0; i<lines;i++){
 			//printf("%s\n", inputFile[i]);
-			result = strcmp(inputFile[i], decrypted);
+			result = strcmp(file[i], decrypted);
 
 			if(result == 0){
 				//printf("Found\n");
@@ -119,8 +134,8 @@ int max_index;
 		}
 
 		//Free dictionary words
-		for(int w=0; w<nlines;w++){
-			free(inputFile[w]);
+		for(int w=0; w<lines;w++){
+			free(file[w]);
 		}
 		
 		fclose(fp);
