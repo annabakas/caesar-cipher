@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h> 
 
 #define SHIFTS 25
 
@@ -95,33 +96,48 @@ int max_index;
 		
 		//printf("Key: %d %s\n",key, decrypted);
 		
-		//printf("%d lines\n", nlines);
+		//printf("%d lines\n", lines);
 		
+		max = shifts[0];
 		//Go through dictionary and compare dictionary word to decrypted word
 		//Increment found if result == 0
 		for(int i=0; i<lines;i++){
-			//printf("%s\n", inputFile[i]);
+			
+			//printf("Comparing to: %s\n", file[i]);
+			//printf("%s\n", decrypted);
+			//printf("Shift Key: %d %s\n", key, decrypted);	
 			result = strcmp(file[i], decrypted);
-
+			//printf("result: %d\n", result);
+			
 			if(result == 0){
-				//printf("Found\n");
+				printf("Found: %d\n", found);
 				found++;	
-				//return 1;		
+				//return 1;
+				//break;
+				shifts[key]++;
+				printf("\nOccurences: %d\n", shifts[key]);
+				if(shifts[key] > max){
+					max_index = key;
+					printf("%d\n", max_index);
+				}		
 			}
 			else{
-				//printf("not found\n");
+				//printf("\nNot found\n");	
 			}
-			
+			//break;
 		}
+			
 		
+		
+		/*
 		//printf("Dictionary: %d\n", found);
 		
 		max = shifts[0];
 		
 		//If word is in the dictionary, find shift with max occurences
-		if(found == 4){
+		if(found > 0){
 			shifts[key] += 1;
-			//printf("Occurences: %d\n", shifts[key]);
+			printf("Occurences: %d\n", shifts[key]);
 			//Ignore max shift occurences == 1
 			if(shifts[key] == 1){
 				
@@ -129,9 +145,10 @@ int max_index;
 			else{
 				if(shifts[key] > max){
 					max_index = key;
+					//printf("%d\n", max_index);
 				}
 			}
-		}
+		}*/
 
 		//Free dictionary words
 		for(int w=0; w<lines;w++){
@@ -146,12 +163,13 @@ int max_index;
 	//Passes decrypted word and key/shift to openDict() to check 
 	//if it's in the dictionary
 	char* decrypt(char *word){
-		//printf("\n%s\n", word);
+		printf("\n%s\n", word);
 		char ch;
 		
 		char *decrypted;
-		decrypted = (char*) calloc(1,sizeof(char));
-		
+		decrypted = (char*)malloc(50*sizeof(char));
+		//decrypted = (char*) calloc(8732,sizeof(char));
+		//char decrypted[100];
 		for(int key = 1; key < 26; key++){
 			for(int i=0; word[i] != '\0'; ++i){
 				int k = 0;
@@ -169,8 +187,9 @@ int max_index;
 				}
 				
 			}	
-			//printf("Shift Key: %d %s\n",key, decrypted);
+			printf("Shift Key: %d %s\n",key, decrypted);
 			openDict(decrypted, key);
+			//free(decrypted);
 		}
 		
 		free(decrypted);
@@ -180,32 +199,14 @@ int max_index;
 	//Splits sentence into words using strtok()
 	//Pass word to decrypt()
 	int split(char *l){
-		int counter = 0;
-		char **words= 0;
-		int tempCounter = 0;
-		
-		char *token = strtok(l, " ");
-		
-		while(token != NULL)
-		{
-			//NULL passed as first argument in order to
-			//continue with the same string (line)
-			if(tempCounter == 0){
-				token = strtok(NULL, " ");
-				tempCounter++;
-			}
-			//grows **words with realloc
-			//allocates size of each element of words using malloc
-			//copies token to words[counter] as counter is incremented
-			else{
-				words = realloc(words, (counter+ 1) * sizeof(char *));
-				words[counter] = malloc(strlen(token) + 1);
-				decrypt(strcpy(words[counter++], token));
-				token = strtok(NULL, " ");
-			}
-			
-			counter = 0;
+		char* token = strtok(l, " ");
+		while(token!=NULL){
+			decrypt(token);
+			//printf("%s\n", token);
+			token = strtok(NULL, " ");
 		}
+
+		return 0;
 	}	
 
 
@@ -218,21 +219,27 @@ int max_index;
 		
 		FILE *fp;
 		fp = fopen("shifts.txt", "w");
-
-		while((read = getline(&line, &len, stdin)) != EOF)
+		clock_t starttime = clock();
+		while((read = getline(&line, &len, stdin)) <= EOF)
 		{
+			printf("%s\n", line);
 			split(line);
-			
+		
 			//Writes best shift to shifts.txt
 			fprintf(fp, "%d\n", max_index);
 			
-			//printf("\nBest Shift: %d\n", max_index);
+			printf("\nBest Shift: %d\n", max_index);
 			
 			//Resets occurences of each shift for each sentence
 			for(int i = 1; i<26; i++){
 				shifts[i] = 0;
 			}
+			break;
 		}
+
+		//clock_t endtime = clock();
+		//printf("\n\nendtime : %f\n", ((float)endtime)/CLOCKS_PER_SEC);
+
 
 		fclose(fp);
 	}
