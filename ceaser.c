@@ -164,12 +164,12 @@ int max_index;
 	//if it's in the dictionary
 	char* decrypt(char *word){
 		printf("\n%s\n", word);
+		
 		char ch;
 		
 		char *decrypted;
 		decrypted = (char*)malloc(50*sizeof(char));
-		//decrypted = (char*) calloc(8732,sizeof(char));
-		//char decrypted[100];
+		
 		for(int key = 1; key < 26; key++){
 			for(int i=0; word[i] != '\0'; ++i){
 				int k = 0;
@@ -199,12 +199,19 @@ int max_index;
 	//Splits sentence into words using strtok()
 	//Pass word to decrypt()
 	int split(char *l){
+		char** separate = 0;
 		char* token = strtok(l, " ");
+		int counter = 0;
+		
 		while(token!=NULL){
-			decrypt(token);
+			separate = realloc(separate, (counter+1) *sizeof(char*));
+			separate[counter] = malloc(strlen(token) + 1);
+			decrypt(strcpy(separate[counter++], token));
 			//printf("%s\n", token);
 			token = strtok(NULL, " ");
 		}
+		
+		counter = 0;
 
 		return 0;
 	}	
